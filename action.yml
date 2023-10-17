@@ -5,7 +5,7 @@ inputs:
     description: "Optional list of allowed scopes"
     required: false
     default: ""
-  jira-required: 
+  jira-required:
     description: "Optional should a missing JIRA ticket cause a failure"
     required: false
     default: "false"
