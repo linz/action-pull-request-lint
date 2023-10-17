@@ -12,7 +12,7 @@ inputs:
   jira:
     description: "Are JIRA tickets required ('error', 'warn', 'off')"
     required: false
-    default: "false"
+    default: "warn"
   jira-projects:
     description: "Optional list of allowed jira projects"
     required: false
@@ -63,7 +63,6 @@ runs:
               const typeRegex = `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|release`
               const conventionalRegex = new RegExp(`^(${typeRegex})(\\(${scopeRegex}\\))?(!)?: [^\\r\\n]+$`)
 
-              // console.log(conventionalRegex, title.match(conventionalRegex))
 
               if (title.match(conventionalRegex) == null) {
                 console.log('Pull request title does not match conventional format!')
