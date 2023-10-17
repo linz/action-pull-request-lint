@@ -22,15 +22,20 @@ runs:
   steps:
     - name: Check Pull Request Title
       uses: actions/github-script@v4
+      env:
+        JIRA: ${{ inputs.jira }}
+        JIRA_PROJECTS: ${{ inputs.jira-projects }} 
+        CONVENTIONAL: ${{ inputs.conventional }}
+        CONVENTIONAL_SCOPES: ${{ inputs.conventional-scopes }}
       with:
         # github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           try {
-            const jiraRequired = '{{ inputs.jira }}'
-            const jiraProjects = '{{ inputs.jira-projects }}'
+            const jiraRequired = process.env.JIRA
+            const jiraProjects = process.env.JIRA_PROJECTS
 
-            const conventionalRequired = '{{ inputs.conventional }}'
-            const conventionalScopes = '{{ inputs.conventional-scopes }}'
+            const conventionalRequired = process.env.CONVENTIONAL
+            const conventionalScopes = process.env.CONVENTIONAL_SCOPES
 
             function warnOrFail(ctx, message) {
               if (ctx === 'error') {

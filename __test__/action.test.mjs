@@ -14,10 +14,10 @@ function createTestFunction(ctx) {
 
   const newFunc = func
     // Replace inputs
-    .replace("{{ inputs.conventional }}", ctx.conventional ?? "error")
-    .replace("{{ inputs.conventional-scopes }}", ctx.conventionalScopes ?? "")
-    .replace("{{ inputs.jira }}", ctx.jira ?? "warn")
-    .replace("{{ inputs.jira-projects }}", ctx.jiraProjects ?? "")
+    .replace("process.env.CONVENTIONAL", `'${ctx.conventional ?? "error"}'`)
+    .replace("process.env.CONVENTIONAL_SCOPES", `'${ctx.conventionalScopes ?? ""}'`)
+    .replace("process.env.JIRA", `'${ctx.jira ?? "warn"}'`)
+    .replace("process.env.JIRA_PROJECTS", `'${ctx.jiraProjects ?? ""}'`)
     // Remove console.logs
     .split("\n")
     .filter((f) => !f.includes("console.log"))
