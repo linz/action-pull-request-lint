@@ -23,7 +23,7 @@ runs:
     - name: Check Pull Request Title
       uses: actions/github-script@v4
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        # github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           try {
             const jiraRequired = '{{ inputs.jira }}'
