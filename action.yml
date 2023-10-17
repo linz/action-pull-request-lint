@@ -1,0 +1,40 @@
+name: "Lint pull requests"
+description: "Lint pull request titles to ensure JIRA tickets and conventional commits are followed"
+inputs:
+  scopes:
+    description: "Optional list of allowed scopes"
+    required: false
+    default: ""
+  jira-required: 
+    description: "Optional should a missing JIRA ticket cause a failure"
+    required: false
+    default: "false"
+  jira-projects:
+    description: "Optional list of allowed jira projects"
+    required: false
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - name: Check Pull Request Title
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const scopes = '{{ inputs.scopes }}'
+          const jiraProjects = '{{ inputs.jira-projects }}'
+          const jiraRequired = '{{ inputs.jira-required }}' === 'true'
+
+          const title = context.payload.pull_request.title
+          console.log(`Testing title: '${title}'`)
+
+          // The pattern for JIRA ticket format
+          if (jiraRequired) {
+            const jiraRegex = jiraProjects ? '(' + jiraProjects.replace(/,/g, '|') + ')-\\d+' : '[A-Z]+-\\d+'
+            const jiraPattern = new RegExp(jiraRegex, 'g');
+
+            if (title.match(jiraPattern) == null) {
+              console.log('The PR title does not match JIRA ticket format!')
+              core.setFailed('Pull request title does not contain a JIRA ticket!')
+            }
+          }
