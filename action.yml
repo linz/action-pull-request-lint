@@ -1,12 +1,16 @@
 name: "Lint pull requests"
 description: "Lint pull request titles to ensure JIRA tickets and conventional commits are followed"
 inputs:
-  scopes:
+  conventional:
+    description: "Are conventional commits required ('error', 'warn', 'off')"
+    required: false
+    default: "error"
+  conventional-scopes:
     description: "Optional list of allowed scopes"
     required: false
     default: ""
-  jira-required:
-    description: "Optional should a missing JIRA ticket cause a failure"
+  jira:
+    description: "Are JIRA tickets required ('error', 'warn', 'off')"
     required: false
     default: "false"
   jira-projects:
@@ -21,20 +25,53 @@ runs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const scopes = '{{ inputs.scopes }}'
-          const jiraProjects = '{{ inputs.jira-projects }}'
-          const jiraRequired = '{{ inputs.jira-required }}' === 'true'
+          try {
+            const jiraRequired = '{{ inputs.jira }}'
+            const jiraProjects = '{{ inputs.jira-projects }}'
 
-          const title = context.payload.pull_request.title
-          console.log(`Testing title: '${title}'`)
+            const conventionalRequired = '{{ inputs.conventional }}'
+            const conventionalScopes = '{{ inputs.conventional-scopes }}'
 
-          // The pattern for JIRA ticket format
-          if (jiraRequired) {
-            const jiraRegex = jiraProjects ? '(' + jiraProjects.replace(/,/g, '|') + ')-\\d+' : '[A-Z]+-\\d+'
-            const jiraPattern = new RegExp(jiraRegex, 'g');
-
-            if (title.match(jiraPattern) == null) {
-              console.log('The PR title does not match JIRA ticket format!')
-              core.setFailed('Pull request title does not contain a JIRA ticket!')
+            function warnOrFail(ctx, message) {
+              if (ctx === 'error') {
+                core.setFailed(message);
+              } else if (ctx === 'warn') {
+                core.warning(message)
+              } else if(ctx === 'off') {
+                return
+              } else {
+                throw new Error(`Failed to parse "${ctx}" as "error", "warn" or "off"`)
+              }
             }
+
+            const title = context.payload.pull_request.title
+            console.log(`Testing title: '${title}'`)
+
+            // The pattern for JIRA ticket format
+            if (jiraRequired !== 'off') {
+              const jiraRegex = jiraProjects ? '(' + jiraProjects.replace(/,/g, '|') + ')-\\d+' : '[A-Z]+-\\d+'
+              const jiraPattern = new RegExp(jiraRegex, 'g');
+
+              if (title.match(jiraPattern) == null) {
+                console.log('Pull request title does not match JIRA ticket format!')
+                warnOrFail(jiraRequired, 'Pull request title does not contain a JIRA ticket!')
+              }
+            }
+
+            if (conventionalRequired !== 'off') {
+              const scopeRegex = conventionalScopes ? conventionalScopes.replace(/,/g, '|') : '[a-z]+'
+              const typeRegex = `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|release`
+              const conventionalRegex = new RegExp(`^(${typeRegex})(\\(${scopeRegex}\\))?(!)?: [^\\r\\n]+$`)
+
+              // console.log(conventionalRegex, title.match(conventionalRegex))
+
+              if (title.match(conventionalRegex) == null) {
+                console.log('Pull request title does not match conventional format!')
+                warnOrFail(conventionalRequired, 'Pull request title does not match conventional format!')
+              }
+
+            }
+
+          } catch(e) {
+            core.setFailed(e.message)
           }

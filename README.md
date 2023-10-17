@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: linz/action-pull-request-lint@v0
         with:
-          scopes: "infra,sprites,server" # optional list of conventional commit scopes
+          conventional: "error" # require conventional pull request title (default: "error" options: "warn", "off")
+          conventional-scopes: "infra,sprites,server" # optional list of conventional commit scopes
+
+          jira: "error" # Require JIRA  ticket references (default: "error", options: "warn", "off")
           jira-projects: "BM,TDE" # optional list of jira projects
 ```
