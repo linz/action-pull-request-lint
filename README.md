@@ -15,7 +15,7 @@ jobs:
   pull-request-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: linz/action-pull-request-lint@v0
+      - uses: linz/action-pull-request-lint@v1
         with:
           conventional: "error" # require conventional pull request title (default: "error" options: "error", "warn", "off")
           conventional-scopes: "infra,sprites,server" # optional list of conventional commit scopes

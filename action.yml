@@ -21,7 +21,7 @@ runs:
   using: "composite"
   steps:
     - name: Check Pull Request Title
-      uses: actions/github-script@v4
+      uses: actions/github-script@v6
       env:
         JIRA: ${{ inputs.jira }}
         JIRA_PROJECTS: ${{ inputs.jira-projects }} 
