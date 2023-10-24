@@ -24,7 +24,7 @@ runs:
       uses: actions/github-script@v6
       env:
         JIRA: ${{ inputs.jira }}
-        JIRA_PROJECTS: ${{ inputs.jira-projects }} 
+        JIRA_PROJECTS: ${{ inputs.jira-projects }}
         CONVENTIONAL: ${{ inputs.conventional }}
         CONVENTIONAL_SCOPES: ${{ inputs.conventional-scopes }}
       with:

@@ -1,9 +1,11 @@
 # linz/action-pull-request-lint
 
-Composite action to validate that pull request titles match 
+Composite action to validate that pull request titles contain
+
 - Conventional Commits
 - Include a JIRA ticket number
-usage:
+
+### Usage
 
 ```yaml
 name: Pull Request lint
