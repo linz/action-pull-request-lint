@@ -15,7 +15,10 @@ function createTestFunction(ctx) {
   const newFunc = func
     // Replace inputs
     .replace("process.env.CONVENTIONAL", `'${ctx.conventional ?? "error"}'`)
-    .replace("process.env.CONVENTIONAL_SCOPES", `'${ctx.conventionalScopes ?? ""}'`)
+    .replace(
+      "process.env.CONVENTIONAL_SCOPES",
+      `'${ctx.conventionalScopes ?? ""}'`
+    )
     .replace("process.env.JIRA", `'${ctx.jira ?? "warn"}'`)
     .replace("process.env.JIRA_PROJECTS", `'${ctx.jiraProjects ?? ""}'`)
     // Remove console.logs
@@ -54,6 +57,10 @@ describe("action", () => {
     );
     assert.deepEqual(
       runAction({}, "feat(cli)!: Remove the old cog creation, serve BM-592"),
+      {}
+    );
+    assert.deepEqual(
+      runAction({}, "feat(cdk8s): use environment based secrets TDE-712"),
       {}
     );
     assert.deepEqual(runAction({}, "release: v6.46.0"), {

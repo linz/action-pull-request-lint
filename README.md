@@ -1,8 +1,11 @@
 # linz/action-pull-request-lint
 
-Composite action to checkout/build/test typescript with npm or yarn.
+Composite action to validate that pull request titles contain
 
-usage:
+- Conventional Commits
+- Include a JIRA ticket number
+
+### Usage
 
 ```yaml
 name: Pull Request lint

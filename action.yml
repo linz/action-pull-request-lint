@@ -24,7 +24,7 @@ runs:
       uses: actions/github-script@v6
       env:
         JIRA: ${{ inputs.jira }}
-        JIRA_PROJECTS: ${{ inputs.jira-projects }} 
+        JIRA_PROJECTS: ${{ inputs.jira-projects }}
         CONVENTIONAL: ${{ inputs.conventional }}
         CONVENTIONAL_SCOPES: ${{ inputs.conventional-scopes }}
       with:
@@ -62,7 +62,7 @@ runs:
             }
 
             if (conventionalRequired !== 'off') {
-              const scopeRegex = conventionalScopes ? conventionalScopes.replace(/,/g, '|') : '[a-z]+'
+              const scopeRegex = conventionalScopes ? conventionalScopes.replace(/,/g, '|') : '[a-z0-9]+'
               const typeRegex = `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|release`
               const conventionalRegex = new RegExp(`^(${typeRegex})(\\(${scopeRegex}\\))?(!)?: [^\\r\\n]+$`)
 
