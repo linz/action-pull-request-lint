@@ -28,7 +28,6 @@ runs:
         CONVENTIONAL: ${{ inputs.conventional }}
         CONVENTIONAL_SCOPES: ${{ inputs.conventional-scopes }}
       with:
-        # github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           try {
             const jiraRequired = process.env.JIRA
@@ -58,7 +57,6 @@ runs:
               const jiraPattern = new RegExp(jiraRegex, 'g');
 
               if (title.match(jiraPattern) == null) {
-                console.log('Pull request title does not match JIRA ticket format!')
                 warnOrFail(jiraRequired, 'Pull request title does not contain a JIRA ticket!')
               }
             }
@@ -70,7 +68,6 @@ runs:
 
 
               if (title.match(conventionalRegex) == null) {
-                console.log('Pull request title does not match conventional format!')
                 warnOrFail(conventionalRequired, 'Pull request title does not match conventional format!')
               }
 
