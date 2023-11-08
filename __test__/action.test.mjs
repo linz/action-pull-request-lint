@@ -63,6 +63,10 @@ describe("action", () => {
       runAction({}, "feat(cdk8s): use environment based secrets TDE-712"),
       {}
     );
+    assert.deepEqual(
+      runAction({}, "build(dev-deps): bump the aws group with 3 updates TDE-34"),
+      {}
+    );
     assert.deepEqual(runAction({}, "release: v6.46.0"), {
       warning: ["Pull request title does not contain a JIRA ticket!"],
     });
