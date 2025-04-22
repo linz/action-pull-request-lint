@@ -55,9 +55,12 @@ runs:
             if (jiraRequired !== 'off') {
               const jiraRegex = jiraProjects ? '(' + jiraProjects.replace(/,/g, '|') + ')-\\d+' : '[A-Z]+-\\d+'
               const jiraPattern = new RegExp(jiraRegex, 'g');
-
-              if (title.match(jiraPattern) == null) {
+              
+              jiraMatch = title.match(jiraPattern);
+              if (jiraMatch == null) {
                 warnOrFail(jiraRequired, 'Pull request title does not contain a JIRA ticket!')
+              } else {
+                core.setOutput('jira_match', jiraMatch ? jiraMatch.join(',') : '');
               }
             }
 
@@ -66,11 +69,12 @@ runs:
               const typeRegex = `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|release`
               const conventionalRegex = new RegExp(`^(${typeRegex})(\\(${scopeRegex}\\))?(!)?: [^\\r\\n]+$`)
 
-
-              if (title.match(conventionalRegex) == null) {
+              conventionalMatch = title.match(conventionalRegex);
+              if (conventionalMatch == null) {
                 warnOrFail(conventionalRequired, 'Pull request title does not match conventional format!')
+              } else {
+                core.setOutput('conventional_match', conventionalMatch ? conventionalMatch[1] : '');
               }
-
             }
 
           } catch(e) {
