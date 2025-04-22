@@ -17,10 +17,18 @@ inputs:
     description: "Optional list of allowed jira projects"
     required: false
     default: ""
+outputs:
+    jira_match:
+      description: "The JIRA ticket found in the title"
+      value: ${{ steps.check-title.outputs.jira_match }}
+    conventional_match:
+      description: "The conventional commit type found in the title"
+      value: ${{ steps.check-title.outputs.conventional_match }}
 runs:
   using: "composite"
   steps:
     - name: Check Pull Request Title
+      id: check-title
       uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       env:
         JIRA: ${{ inputs.jira }}
