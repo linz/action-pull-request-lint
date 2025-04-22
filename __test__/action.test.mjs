@@ -59,8 +59,8 @@ describe("action", () => {
       runAction({}, "feat(etl): Tile schema refinement BM-105"),
       {
         outputs: {
-          conventional_match: 'feat',
-          jira_match: 'BM-105'
+          'conventional-match': 'feat',
+          'jira-match': 'BM-105'
         }
       }
     );
@@ -68,8 +68,8 @@ describe("action", () => {
       runAction({}, "feat(cli)!: Remove the old cog creation, serve BM-592"),
       {
         outputs: {
-          conventional_match: 'feat',
-          jira_match: 'BM-592'
+          'conventional-match': 'feat',
+          'jira-match': 'BM-592'
         }
       }
     );
@@ -77,8 +77,8 @@ describe("action", () => {
       runAction({}, "feat(cdk8s): use environment based secrets TDE-712"),
       {
         outputs: {
-          conventional_match: 'feat',
-          jira_match: 'TDE-712'
+          'conventional-match': 'feat',
+          'jira-match': 'TDE-712'
         }
       }
     );
@@ -86,14 +86,14 @@ describe("action", () => {
       runAction({}, "build(dev-deps): bump the aws group with 3 updates TDE-34"),
       {
         outputs: {
-          conventional_match: 'build',
-          jira_match: 'TDE-34'
+          'conventional-match': 'build',
+          'jira-match': 'TDE-34'
         }
       }
     );
     assert.deepEqual(runAction({}, "release: v6.46.0"), {
       outputs: {
-        conventional_match: 'release',
+        'conventional-match': 'release',
       },
       warning: ["Pull request title does not contain a JIRA ticket!"],
     });
@@ -101,8 +101,8 @@ describe("action", () => {
       runAction({}, "ci: use environment based secrets TDE-712"),
       {
         outputs: {
-          conventional_match: 'ci',
-          jira_match: 'TDE-712'
+          'conventional-match': 'ci',
+          'jira-match': 'TDE-712'
         }
       }
     );
@@ -112,7 +112,7 @@ describe("action", () => {
     it("should validate against jira projects", () => {
       assert.deepEqual(runAction({ conventional: "off" }, "Hello BM-14"), {
         outputs: {
-          jira_match: 'BM-14'
+          'jira-match': 'BM-14'
         }
       });
       assert.deepEqual(runAction({ conventional: "off" }, "Hello BM"), {
@@ -129,7 +129,7 @@ describe("action", () => {
         runAction({ conventional: "off", jiraProjects: "BM" }, "Hello BM-14"),
         {
           outputs: {
-            jira_match: 'BM-14'
+            'jira-match': 'BM-14'
           },
         }
       );
@@ -140,7 +140,7 @@ describe("action", () => {
         ),
         {
           outputs: {
-            jira_match: 'TDE-1234'
+            'jira-match': 'TDE-1234'
           },
         }
       );
@@ -168,7 +168,7 @@ describe("action", () => {
         runAction({ jira: "off", conventionalScopes: "hello" }, "feat: hello"),
         {
           outputs: {
-            conventional_match: 'feat',
+            'conventional-match': 'feat',
           },
         }
       );
@@ -179,7 +179,7 @@ describe("action", () => {
         ),
         {
           outputs: {
-            conventional_match: 'feat',
+            'conventional-match': 'feat',
           },
         }
       );

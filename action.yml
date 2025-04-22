@@ -18,12 +18,12 @@ inputs:
     required: false
     default: ""
 outputs:
-    jira_match:
+    jira-match:
       description: "The JIRA ticket found in the title"
-      value: ${{ steps.check-title.outputs.jira_match }}
-    conventional_match:
+      value: ${{ steps.check-title.outputs.jira-match }}
+    conventional-match:
       description: "The conventional commit type found in the title"
-      value: ${{ steps.check-title.outputs.conventional_match }}
+      value: ${{ steps.check-title.outputs.conventional-match }}
 runs:
   using: "composite"
   steps:
@@ -68,7 +68,7 @@ runs:
               if (jiraMatch == null) {
                 warnOrFail(jiraRequired, 'Pull request title does not contain a JIRA ticket!')
               } else {
-                core.setOutput('jira_match', jiraMatch ? jiraMatch.join(',') : '');
+                core.setOutput('jira-match', jiraMatch ? jiraMatch.join(',') : '');
               }
             }
 
@@ -81,7 +81,7 @@ runs:
               if (conventionalMatch == null) {
                 warnOrFail(conventionalRequired, 'Pull request title does not match conventional format!')
               } else {
-                core.setOutput('conventional_match', conventionalMatch ? conventionalMatch[1] : '');
+                core.setOutput('conventional-match', conventionalMatch ? conventionalMatch[1] : '');
               }
             }
 
