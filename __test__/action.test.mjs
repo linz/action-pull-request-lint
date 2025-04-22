@@ -59,8 +59,9 @@ describe("action", () => {
       runAction({}, "feat(etl): Tile schema refinement BM-105"),
       {
         outputs: {
-          'conventional-match': 'feat',
-          'jira-match': 'BM-105'
+          'commit-scope': 'etl',
+          'commit-type': 'feat',
+          'jira-issue-key': 'BM-105'
         }
       }
     );
@@ -68,8 +69,9 @@ describe("action", () => {
       runAction({}, "feat(cli)!: Remove the old cog creation, serve BM-592"),
       {
         outputs: {
-          'conventional-match': 'feat',
-          'jira-match': 'BM-592'
+          'commit-scope': 'cli',
+          'commit-type': 'feat',
+          'jira-issue-key': 'BM-592'
         }
       }
     );
@@ -77,8 +79,9 @@ describe("action", () => {
       runAction({}, "feat(cdk8s): use environment based secrets TDE-712"),
       {
         outputs: {
-          'conventional-match': 'feat',
-          'jira-match': 'TDE-712'
+          'commit-scope': 'cdk8s',
+          'commit-type': 'feat',
+          'jira-issue-key': 'TDE-712'
         }
       }
     );
@@ -86,14 +89,15 @@ describe("action", () => {
       runAction({}, "build(dev-deps): bump the aws group with 3 updates TDE-34"),
       {
         outputs: {
-          'conventional-match': 'build',
-          'jira-match': 'TDE-34'
+          'commit-scope': 'dev-deps',
+          'commit-type': 'build',
+          'jira-issue-key': 'TDE-34'
         }
       }
     );
     assert.deepEqual(runAction({}, "release: v6.46.0"), {
       outputs: {
-        'conventional-match': 'release',
+        'commit-type': 'release',
       },
       warning: ["Pull request title does not contain a JIRA ticket!"],
     });
@@ -101,8 +105,8 @@ describe("action", () => {
       runAction({}, "ci: use environment based secrets TDE-712"),
       {
         outputs: {
-          'conventional-match': 'ci',
-          'jira-match': 'TDE-712'
+          'commit-type': 'ci',
+          'jira-issue-key': 'TDE-712'
         }
       }
     );
@@ -112,7 +116,7 @@ describe("action", () => {
     it("should validate against jira projects", () => {
       assert.deepEqual(runAction({ conventional: "off" }, "Hello BM-14"), {
         outputs: {
-          'jira-match': 'BM-14'
+          'jira-issue-key': 'BM-14'
         }
       });
       assert.deepEqual(runAction({ conventional: "off" }, "Hello BM"), {
@@ -129,7 +133,7 @@ describe("action", () => {
         runAction({ conventional: "off", jiraProjects: "BM" }, "Hello BM-14"),
         {
           outputs: {
-            'jira-match': 'BM-14'
+            'jira-issue-key': 'BM-14'
           },
         }
       );
@@ -140,7 +144,7 @@ describe("action", () => {
         ),
         {
           outputs: {
-            'jira-match': 'TDE-1234'
+            'jira-issue-key': 'TDE-1234'
           },
         }
       );
@@ -168,7 +172,7 @@ describe("action", () => {
         runAction({ jira: "off", conventionalScopes: "hello" }, "feat: hello"),
         {
           outputs: {
-            'conventional-match': 'feat',
+            'commit-type': 'feat',
           },
         }
       );
@@ -179,7 +183,8 @@ describe("action", () => {
         ),
         {
           outputs: {
-            'conventional-match': 'feat',
+            'commit-scope': 'hello',
+            'commit-type': 'feat',
           },
         }
       );

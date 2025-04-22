@@ -18,12 +18,15 @@ inputs:
     required: false
     default: ""
 outputs:
-    jira-match:
-      description: "The JIRA ticket found in the title"
-      value: ${{ steps.check-title.outputs.jira-match }}
-    conventional-match:
-      description: "The conventional commit type found in the title"
-      value: ${{ steps.check-title.outputs.conventional-match }}
+  jira-issue-key:
+    description: "The JIRA ticket found in the title"
+    value: ${{ steps.check-title.outputs.jira-issue-key }}
+  commit-type:
+    description: "The conventional commit type found in the title"
+    value: ${{ steps.check-title.outputs.commit-type }}
+  commit-scope:
+    description: "The conventional commit scope found in the title"
+    value: ${{ steps.check-title.outputs.commit-scope }}
 runs:
   using: "composite"
   steps:
@@ -68,7 +71,7 @@ runs:
               if (jiraMatch == null) {
                 warnOrFail(jiraRequired, 'Pull request title does not contain a JIRA ticket!')
               } else {
-                core.setOutput('jira-match', jiraMatch ? jiraMatch.join(',') : '');
+                core.setOutput('jira-issue-key', jiraMatch ? jiraMatch.join(',') : '');
               }
             }
 
@@ -77,11 +80,14 @@ runs:
               const typeRegex = `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|release`
               const conventionalRegex = new RegExp(`^(${typeRegex})(\\(${scopeRegex}\\))?(!)?: [^\\r\\n]+$`)
 
-              conventionalMatch = title.match(conventionalRegex);
+              conventionalMatch = title.match(conventionalRegex);  
               if (conventionalMatch == null) {
                 warnOrFail(conventionalRequired, 'Pull request title does not match conventional format!')
               } else {
-                core.setOutput('conventional-match', conventionalMatch ? conventionalMatch[1] : '');
+                core.setOutput('commit-type', conventionalMatch ? conventionalMatch[1] : '');
+                if (conventionalMatch[2]) {
+                  core.setOutput('commit-scope', conventionalMatch[2].replace(/[\(\)]/g, ''));
+                }
               }
             }
 
