@@ -42,6 +42,10 @@ function runAction(ctx, title) {
       output.warning = output.warning || [];
       output.warning.push(reason);
     },
+    setOutput(key, value) {
+      output.outputs = output.outputs || {};
+      output.outputs[key] = value;
+    },
   };
 
   action({ payload: { pull_request: { title } } }, core);
@@ -53,32 +57,68 @@ describe("action", () => {
   it("should validate commits", () => {
     assert.deepEqual(
       runAction({}, "feat(etl): Tile schema refinement BM-105"),
-      {}
+      {
+        outputs: {
+          'commit-scope': 'etl',
+          'commit-type': 'feat',
+          'jira-issue-key': 'BM-105'
+        }
+      }
     );
     assert.deepEqual(
       runAction({}, "feat(cli)!: Remove the old cog creation, serve BM-592"),
-      {}
+      {
+        outputs: {
+          'commit-scope': 'cli',
+          'commit-type': 'feat',
+          'jira-issue-key': 'BM-592'
+        }
+      }
     );
     assert.deepEqual(
       runAction({}, "feat(cdk8s): use environment based secrets TDE-712"),
-      {}
+      {
+        outputs: {
+          'commit-scope': 'cdk8s',
+          'commit-type': 'feat',
+          'jira-issue-key': 'TDE-712'
+        }
+      }
     );
     assert.deepEqual(
       runAction({}, "build(dev-deps): bump the aws group with 3 updates TDE-34"),
-      {}
+      {
+        outputs: {
+          'commit-scope': 'dev-deps',
+          'commit-type': 'build',
+          'jira-issue-key': 'TDE-34'
+        }
+      }
     );
     assert.deepEqual(runAction({}, "release: v6.46.0"), {
+      outputs: {
+        'commit-type': 'release',
+      },
       warning: ["Pull request title does not contain a JIRA ticket!"],
     });
     assert.deepEqual(
       runAction({}, "ci: use environment based secrets TDE-712"),
-      {}
+      {
+        outputs: {
+          'commit-type': 'ci',
+          'jira-issue-key': 'TDE-712'
+        }
+      }
     );
   });
 
   describe("jira", () => {
     it("should validate against jira projects", () => {
-      assert.deepEqual(runAction({ conventional: "off" }, "Hello BM-14"), {});
+      assert.deepEqual(runAction({ conventional: "off" }, "Hello BM-14"), {
+        outputs: {
+          'jira-issue-key': 'BM-14'
+        }
+      });
       assert.deepEqual(runAction({ conventional: "off" }, "Hello BM"), {
         warning: ["Pull request title does not contain a JIRA ticket!"],
       });
@@ -91,14 +131,22 @@ describe("action", () => {
     it("should validate against required jira projects", () => {
       assert.deepEqual(
         runAction({ conventional: "off", jiraProjects: "BM" }, "Hello BM-14"),
-        {}
+        {
+          outputs: {
+            'jira-issue-key': 'BM-14'
+          },
+        }
       );
       assert.deepEqual(
         runAction(
           { conventional: "off", jiraProjects: "TDE,BM" },
           "Hello TDE-1234"
         ),
-        {}
+        {
+          outputs: {
+            'jira-issue-key': 'TDE-1234'
+          },
+        }
       );
 
       assert.deepEqual(
@@ -122,14 +170,23 @@ describe("action", () => {
     it("should restrict to scopes", () => {
       assert.deepEqual(
         runAction({ jira: "off", conventionalScopes: "hello" }, "feat: hello"),
-        {}
+        {
+          outputs: {
+            'commit-type': 'feat',
+          },
+        }
       );
       assert.deepEqual(
         runAction(
           { jira: "off", conventionalScopes: "hello" },
           "feat(hello): hello"
         ),
-        {}
+        {
+          outputs: {
+            'commit-scope': 'hello',
+            'commit-type': 'feat',
+          },
+        }
       );
       assert.deepEqual(
         runAction(

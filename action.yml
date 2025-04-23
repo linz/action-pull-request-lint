@@ -17,10 +17,21 @@ inputs:
     description: "Optional list of allowed jira projects"
     required: false
     default: ""
+outputs:
+  jira-issue-key:
+    description: "The JIRA ticket found in the title"
+    value: ${{ steps.check-title.outputs.jira-issue-key }}
+  commit-type:
+    description: "The conventional commit type found in the title"
+    value: ${{ steps.check-title.outputs.commit-type }}
+  commit-scope:
+    description: "The conventional commit scope found in the title"
+    value: ${{ steps.check-title.outputs.commit-scope }}
 runs:
   using: "composite"
   steps:
     - name: Check Pull Request Title
+      id: check-title
       uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       env:
         JIRA: ${{ inputs.jira }}
@@ -55,9 +66,12 @@ runs:
             if (jiraRequired !== 'off') {
               const jiraRegex = jiraProjects ? '(' + jiraProjects.replace(/,/g, '|') + ')-\\d+' : '[A-Z]+-\\d+'
               const jiraPattern = new RegExp(jiraRegex, 'g');
-
-              if (title.match(jiraPattern) == null) {
+              
+              jiraMatch = title.match(jiraPattern);
+              if (jiraMatch == null) {
                 warnOrFail(jiraRequired, 'Pull request title does not contain a JIRA ticket!')
+              } else {
+                core.setOutput('jira-issue-key', jiraMatch ? jiraMatch.join(',') : '');
               }
             }
 
@@ -66,11 +80,15 @@ runs:
               const typeRegex = `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|release`
               const conventionalRegex = new RegExp(`^(${typeRegex})(\\(${scopeRegex}\\))?(!)?: [^\\r\\n]+$`)
 
-
-              if (title.match(conventionalRegex) == null) {
+              conventionalMatch = title.match(conventionalRegex);  
+              if (conventionalMatch == null) {
                 warnOrFail(conventionalRequired, 'Pull request title does not match conventional format!')
+              } else {
+                core.setOutput('commit-type', conventionalMatch ? conventionalMatch[1] : '');
+                if (conventionalMatch[2]) {
+                  core.setOutput('commit-scope', conventionalMatch[2].replace(/[\(\)]/g, ''));
+                }
               }
-
             }
 
           } catch(e) {
