@@ -5,7 +5,7 @@ Composite action to validate that pull request titles contain
 - Conventional Commits
 - Include a JIRA ticket number
 
-### Usage
+## Usage
 
 ```yaml
 name: Pull Request lint
@@ -30,3 +30,11 @@ jobs:
           jira: "error" # Require JIRA ticket references (default: "warn", options: "error", "warn", "off")
           jira-projects: "BM,TDE" # optional list of jira projects
 ```
+
+### Outputs
+
+The action produces a few useful outputs to allow consumer to process the pull request further
+
+- `commit-type`, the commit type, e.g. `feat`, `fix`, `chore` etc.
+- `commit-scope`, the commit scope (if exists in the pull request title)
+- `jira-issue-key`, the JIRA issue key value (if exists in the pull request title)
