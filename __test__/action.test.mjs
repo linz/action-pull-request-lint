@@ -9,28 +9,29 @@ import assert from "node:assert";
  * @param {*} ctx
  * @returns Function that requires a `context` and `core` parameter
  */
-function createTestFunction(ctx) {
+function createTestFunction(ctx, title) {
   const func = fs.readFileSync("./action.yml", "utf-8").split("script: |")[1];
 
   const newFunc = func
-    // Replace inputs
-    .replace("process.env.CONVENTIONAL", `'${ctx.conventional ?? "error"}'`)
-    .replace(
-      "process.env.CONVENTIONAL_SCOPES",
-      `'${ctx.conventionalScopes ?? ""}'`
-    )
-    .replace("process.env.JIRA", `'${ctx.jira ?? "warn"}'`)
-    .replace("process.env.JIRA_PROJECTS", `'${ctx.jiraProjects ?? ""}'`)
+    .replaceAll('process.env', "__functionEnv")
     // Remove console.logs
     .split("\n")
     .filter((f) => !f.includes("console.log"))
     .join("\n");
   // process.stdout.write(newFunc)
-  return new Function("context", "core", newFunc);
+  return new Function("core", "__functionEnv", newFunc);
 }
 
 function runAction(ctx, title) {
-  const action = createTestFunction(ctx);
+  const action = createTestFunction(ctx, title);
+
+  const functionEnv = {
+    CONVENTIONAL: ctx.conventional ?? "error",
+    CONVENTIONAL_SCOPES: ctx.conventionalScopes ?? "",
+    JIRA: ctx.jira ?? "warn",
+    JIRA_PROJECTS: ctx.jiraProjects ?? "",
+    PULL_REQUEST_TITLE: title,
+  }
 
   const output = {};
   const core = {
@@ -48,7 +49,7 @@ function runAction(ctx, title) {
     },
   };
 
-  action({ payload: { pull_request: { title } } }, core);
+  action(core, functionEnv);
 
   return output;
 }

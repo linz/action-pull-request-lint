@@ -14,9 +14,13 @@ on:
   pull_request:
     types: ["opened", "edited", "reopened", "synchronize"]
 
+# This github action requires no permissions
+permissions: {}
+
 jobs:
   pull-request-lint:
     runs-on: ubuntu-latest
+
     steps:
       - uses: linz/action-pull-request-lint@v1
         with:
