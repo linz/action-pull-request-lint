@@ -38,7 +38,6 @@ runs:
         JIRA_PROJECTS: ${{ inputs.jira-projects }}
         CONVENTIONAL: ${{ inputs.conventional }}
         CONVENTIONAL_SCOPES: ${{ inputs.conventional-scopes }}
-        PULL_REQUEST_TITLE: ${{ context.payload.pull_request.title }}
       with:
         script: |
           try {
@@ -60,7 +59,7 @@ runs:
               }
             }
 
-            const title = process.env.PULL_REQUEST_TITLE;
+            const title = context.payload.pull_request.title;
             console.log(`Testing title: '${title}'`)
 
             // The pattern for JIRA ticket format

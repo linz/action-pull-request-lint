@@ -6,10 +6,9 @@ import assert from "node:assert";
  * Read the action.yml and create a function from the script inside.
  * replacing {{ inputs.* }} with ctx
  *
- * @param {*} ctx
  * @returns Function that requires a `context` and `core` parameter
  */
-function createTestFunction(ctx, title) {
+function createTestFunction() {
   const func = fs.readFileSync("./action.yml", "utf-8").split("script: |")[1];
 
   const newFunc = func
@@ -18,8 +17,8 @@ function createTestFunction(ctx, title) {
     .split("\n")
     .filter((f) => !f.includes("console.log"))
     .join("\n");
-  // process.stdout.write(newFunc)
-  return new Function("core", "__functionEnv", newFunc);
+  
+  return new Function("context", "core", "__functionEnv", newFunc);
 }
 
 function runAction(ctx, title) {
@@ -30,7 +29,6 @@ function runAction(ctx, title) {
     CONVENTIONAL_SCOPES: ctx.conventionalScopes ?? "",
     JIRA: ctx.jira ?? "warn",
     JIRA_PROJECTS: ctx.jiraProjects ?? "",
-    PULL_REQUEST_TITLE: title,
   }
 
   const output = {};
@@ -48,8 +46,8 @@ function runAction(ctx, title) {
       output.outputs[key] = value;
     },
   };
+  action({ payload: { pull_request: { title } } }, core, functionEnv);
 
-  action(core, functionEnv);
 
   return output;
 }
