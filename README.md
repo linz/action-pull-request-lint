@@ -17,9 +17,9 @@ on:
 jobs:
   pull-request-lint:
     runs-on: ubuntu-latest
-  
-    permissions:
-      contents: read
+
+    # This github action requires no permissions
+    permissions: {}
 
     steps:
       - uses: linz/action-pull-request-lint@v1
