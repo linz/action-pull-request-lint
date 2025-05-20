@@ -1,0 +1,18 @@
+name: Pull Request lint
+
+on:
+  pull_request:
+    types: ["opened", "edited", "reopened", "synchronize"]
+
+# This github action requires no permissions
+permissions: {}
+
+jobs:
+  pull-request-lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      # check out the code so we can test the action
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./
