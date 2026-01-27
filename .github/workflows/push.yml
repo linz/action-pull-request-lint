@@ -11,7 +11,7 @@ jobs:
           fetch-depth: 0
 
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: linz/action-setup-node@623b1541d0e2f665d5378ad2e475e3c7335ba944 # v1.0.0
 
       - name: Test
         run: node --test
