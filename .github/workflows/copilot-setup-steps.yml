@@ -26,4 +26,4 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: linz/action-setup-node@aefd5d1f70cf979b1c9a51cdf47169ede423d325 # v1.0.7
+        uses: linz/action-setup-node@48f43de2a9a49534e8d739cd34b75b797ad032ce # v1.0.8
